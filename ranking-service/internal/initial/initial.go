@@ -4,15 +4,16 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"video-realtime-ranking/config"
 	"video-realtime-ranking/internal/app"
+	"video-realtime-ranking/internal/dataaccess/database"
 	"video-realtime-ranking/internal/dataaccess/redis"
+	"video-realtime-ranking/internal/routes"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -27,6 +28,11 @@ func Initial(cfg config.Config) {
 	ctx, stop := signal.NotifyContext(context.Background(), interuptSignals...)
 	defer stop()
 
+	_, err := database.New(cfg)
+	if err != nil {
+		log.Fatal("Cannot connect to database ", err)
+	}
+
 	redis := redis.NewRedis(cfg)
 	redisClient, err := redis.Connect()
 	if err != nil {
@@ -34,9 +40,7 @@ func Initial(cfg config.Config) {
 	}
 	defer redisClient.Close()
 
-	handler := echo.New()
-	handler.Use(middleware.Logger())
-	handler.Use(middleware.Recover())
+	routes := routes.NewRouter(http.NewServeMux())
 
 	// waitGroup
 	waitGroup, ctx := errgroup.WithContext(ctx)
@@ -46,7 +50,7 @@ func Initial(cfg config.Config) {
 	if cfg.Server.Host != "" || cfg.Server.Port != "" {
 		opts = app.Port(cfg.Server.Host, cfg.Server.Port)
 	}
-	app.NewServer(handler, waitGroup, ctx, opts)
+	app.NewServer(routes.SetupRouter(), waitGroup, ctx, opts)
 
 	err = waitGroup.Wait()
 	if err != nil {
