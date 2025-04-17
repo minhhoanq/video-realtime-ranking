@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+    redis:
+        image: redis:7-alpine
+        ports:
+            - "6379:6379"
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            timeout: 5s
+            retries: 5
+        volumes:
+            - ./data:/data
