@@ -14,13 +14,11 @@ type Config struct {
 	}
 	LogLevel string `mapstructure:"LogLevel"`
 	DB       struct {
-		Driver   string `mapstructure:"Driver"`
-		Source   string `mapstructure:"Source"`
-		Host     string `mapstructure:"Host"`
-		Port     int    `mapstructure:"Port"`
-		User     string `mapstructure:"User"`
-		Password string `mapstructure:"Password"`
-		Name     string `mapstructure:"Name"`
+		Host     []string `mapstructure:"Host"`
+		Port     int      `mapstructure:"Port"`
+		Username string   `mapstructure:"Username"`
+		Password string   `mapstructure:"Password"`
+		Name     string   `mapstructure:"Name"`
 	} `mapstructure:"Database"`
 	Redis struct {
 		Port     int    `mapstructure:"Port"`

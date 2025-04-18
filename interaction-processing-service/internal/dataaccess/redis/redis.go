@@ -3,7 +3,7 @@ package redis
 import (
 	"context"
 	"fmt"
-	config "video-realtime-ranking/ranking-service/config"
+	"video-realtime-ranking/interaction-processing-service/config"
 
 	"github.com/redis/go-redis/v9"
 )

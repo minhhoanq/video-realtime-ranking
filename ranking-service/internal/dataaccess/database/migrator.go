@@ -6,7 +6,7 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"video-realtime-ranking/config"
+	"video-realtime-ranking/ranking-service/config"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	// go:embed migrations/postgres
+	//go:embed migrations/postgres
 	migrationDirectoryPostgres embed.FS
 )
 

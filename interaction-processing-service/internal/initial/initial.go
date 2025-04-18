@@ -8,11 +8,12 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"video-realtime-ranking/ranking-service/config"
-	"video-realtime-ranking/ranking-service/internal/app"
-	"video-realtime-ranking/ranking-service/internal/dataaccess/database"
-	"video-realtime-ranking/ranking-service/internal/dataaccess/redis"
-	"video-realtime-ranking/ranking-service/internal/routes"
+	"video-realtime-ranking/interaction-processing-service/config"
+	"video-realtime-ranking/interaction-processing-service/internal/app"
+	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
+	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/redis"
+	"video-realtime-ranking/interaction-processing-service/internal/routes"
+	"video-realtime-ranking/interaction-processing-service/internal/service"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -28,11 +29,11 @@ func Initial(cfg config.Config) {
 	ctx, stop := signal.NotifyContext(context.Background(), interuptSignals...)
 	defer stop()
 
-	_, err := database.New(cfg)
+	db, err := database.New(cfg)
 	if err != nil {
 		log.Fatal("Cannot connect to database ", err)
 	}
-	// defer pg.Close()
+	// defer mongod.Disconnect(context.Background())
 
 	redis := redis.NewRedis(cfg)
 	redisClient, err := redis.Connect()
@@ -41,7 +42,9 @@ func Initial(cfg config.Config) {
 	}
 	defer redisClient.Close()
 
-	routes := routes.NewRouter(http.NewServeMux())
+	interactionDataAccessor := database.NewInteractionDataAccessor(db)
+	interactionService := service.NewInteractionService(interactionDataAccessor)
+	routes := routes.NewRouter(http.NewServeMux(), interactionService)
 
 	// waitGroup
 	waitGroup, ctx := errgroup.WithContext(ctx)

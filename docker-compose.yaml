@@ -10,7 +10,7 @@ services:
             timeout: 5s
             retries: 5
         volumes:
-            - ./data:/data
+            - ./data/redis:/data
     ranking_psql:
         image: postgres:17-alpine
         ports:
@@ -20,4 +20,15 @@ services:
             - POSTGRES_PASSWORD=secret
             - POSTGRES_DB=ranking_psql
         volumes:
-            - ./data/ranking_service:/var/lib/postgresql/data
+            - ./data/ranking_service_psql:/var/lib/postgresql/data
+    ranking_mongod:
+        image: mongo:latest
+        restart: always
+        ports:
+            - "27017:27017"
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=secret
+            - MONGO_INITDB_DATABASE=ranking_mongod
+        volumes:
+            - ./data/ranking_mongod:/data/db
