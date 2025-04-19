@@ -1,4 +1,4 @@
-module video-realtime-ranking/interaction-processing-service
+module video-realtime-ranking/ranking-engine
 
 go 1.23.6
 
