@@ -22,21 +22,16 @@ func NewInteractionService(
 }
 
 func (i *interactionService) CreateInteraction(ctx context.Context, arg *database.SendInteractionRequest) (*database.SendInteractionResponse, error) {
+	interaction, err := i.interactionDataAccessor.CreateInteraction(ctx, arg)
+	if err != nil {
+		return nil, err
+	}
 
-	// interaction, err := i.interactionDataAccessor.CreateInteraction(ctx, arg)
-	// if err != nil {
-	// 	http.Error(w, "Failed to create interaction", http.StatusInternalServerError)
-	// 	return
-	// }
+	response := &database.SendInteractionResponse{
+		UserID:  interaction.UserID,
+		VideoID: interaction.UserID,
+		ID:      interaction.ID,
+	}
 
-	// response := &database.SendInteractionResponse{
-	// 	UserID:  interaction.UserID,
-	// 	VideoID: interaction.UserID,
-	// 	ID:      interaction.ID,
-	// }
-
-	// w.Header().Set("Content-Type", "application/json")
-	// json.NewEncoder(w).Encode(response)
-
-	return nil, nil
+	return response, nil
 }

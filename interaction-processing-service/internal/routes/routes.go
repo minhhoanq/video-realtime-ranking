@@ -6,15 +6,15 @@ import (
 )
 
 type Routes struct {
-	serverMux *http.ServeMux
-	handler   *resful.Handler
+	serverMux          *http.ServeMux
+	interactionHandler *resful.Handler
 }
 
 func NewRouter(serverMux *http.ServeMux,
-	handler *resful.Handler) *Routes {
+	interactionHandler *resful.Handler) *Routes {
 	return &Routes{
-		serverMux: serverMux,
-		handler:   handler,
+		serverMux:          serverMux,
+		interactionHandler: interactionHandler,
 	}
 }
 
@@ -35,6 +35,6 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 
 func (r *Routes) SetupRouter() http.Handler {
 	r.serverMux.HandleFunc("/health-check", methodHandlerFunc(http.MethodGet, healthCheck))
-	r.serverMux.HandleFunc("/interaction", methodHandlerFunc(http.MethodPost, r.handler.CreateInteraction))
+	r.serverMux.HandleFunc("/interaction", methodHandlerFunc(http.MethodPost, r.interactionHandler.CreateInteraction))
 	return r.serverMux
 }

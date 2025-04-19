@@ -4,17 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-
-	"github.com/google/uuid"
 )
 
 const (
-	TOPIC_NAME_INTERACTION_SERVICE_INTERACTION_CREATE = "interaction_service_interaction_create"
+	TOPIC_NAME_RANKING_SERVICE_INTERACTION_CREATE = "ranking_service_interaction_create"
 )
 
 type InteractionCreate struct {
-	VideoID         uuid.UUID
-	UserID          uuid.UUID
+	VideoID         string
+	UserID          string
 	InteractionType string
 }
 
@@ -39,7 +37,7 @@ func (ip *interactionCreateProducer) Produce(ctx context.Context, message Intera
 		return err
 	}
 
-	if err = ip.producer.Produce(ctx, TOPIC_NAME_INTERACTION_SERVICE_INTERACTION_CREATE, messageBytes); err != nil {
+	if err = ip.producer.Produce(ctx, TOPIC_NAME_RANKING_SERVICE_INTERACTION_CREATE, messageBytes); err != nil {
 		fmt.Println("failed to produce interaction create event, err: ", err.Error())
 		return err
 	}

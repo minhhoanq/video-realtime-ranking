@@ -6,34 +6,36 @@ import (
 	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/kafka/consumer"
 )
 
-type OrderServiceKafkaConsumer interface {
+type InteractionServiceKafkaConsumer interface {
 	Start(ctx context.Context) error
 }
 
-type orderServiceKafkaConsumer struct {
-	kafkaConsumer consumer.Consumer
+type interactionServiceKafkaConsumer struct {
+	kafkaConsumer                      consumer.Consumer
+	interactionProcessedMessageHandler InteractionProcessedMessageHandler
 }
 
-func NewOrderServiceKafkaConsumer(kafkaConsumer consumer.Consumer) OrderServiceKafkaConsumer {
-	return &orderServiceKafkaConsumer{
-		kafkaConsumer: kafkaConsumer,
+func NewInteractionServiceKafkaConsumer(kafkaConsumer consumer.Consumer,
+	interactionProcessedMessageHandler InteractionProcessedMessageHandler) InteractionServiceKafkaConsumer {
+	return &interactionServiceKafkaConsumer{
+		kafkaConsumer:                      kafkaConsumer,
+		interactionProcessedMessageHandler: interactionProcessedMessageHandler,
 	}
 }
 
-func (o orderServiceKafkaConsumer) Start(ctx context.Context) error {
-	o.kafkaConsumer.RegisterHandler(
-		"TOPIC_NAME_PAYMENT_SERVICE_TRANSACTION_COMPLETED",
+func (i *interactionServiceKafkaConsumer) Start(ctx context.Context) error {
+	i.kafkaConsumer.RegisterHandler(
+		TOPIC_NAME_INTERACTION_SERVICE_INTERACTION_PROCESSED,
 		func(ctx context.Context, topic string, message []byte) error {
-			var payload any
+			var payload InteractionProcessed
 			if err := json.Unmarshal(message, &payload); err != nil {
 				// o.l.Error("failed to unmarshal message", zap.Error(err))
 				return err
 			}
 
-			// o.paymentTransactionCompleted.Handle(ctx, payload)
-			return nil
+			return i.interactionProcessedMessageHandler.Handle(ctx, payload)
 		},
 	)
 
-	return o.kafkaConsumer.Start(ctx)
+	return i.kafkaConsumer.Start(ctx)
 }

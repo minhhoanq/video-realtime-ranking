@@ -7,11 +7,11 @@ import (
 
 type Routes struct {
 	serverMux *http.ServeMux
-	service   service.InteractionService
+	service   service.RankingEngineService
 }
 
 func NewRouter(serverMux *http.ServeMux,
-	service service.InteractionService) *Routes {
+	service service.RankingEngineService) *Routes {
 	return &Routes{
 		serverMux: serverMux,
 		service:   service,
@@ -35,6 +35,6 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 
 func (r *Routes) SetupRouter() http.Handler {
 	r.serverMux.HandleFunc("/health-check", methodHandlerFunc(http.MethodGet, healthCheck))
-	r.serverMux.HandleFunc("/interaction", methodHandlerFunc(http.MethodPost, r.service.CreateInteraction))
+	// r.serverMux.HandleFunc("/interaction", methodHandlerFunc(http.MethodPost, r.service.RankingEngine))
 	return r.serverMux
 }

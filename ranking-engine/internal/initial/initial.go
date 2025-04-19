@@ -11,7 +11,10 @@ import (
 	"video-realtime-ranking/ranking-engine/config"
 	"video-realtime-ranking/ranking-engine/internal/app"
 	"video-realtime-ranking/ranking-engine/internal/dataaccess/database"
+	"video-realtime-ranking/ranking-engine/internal/dataaccess/kafka/consumer"
+	"video-realtime-ranking/ranking-engine/internal/dataaccess/kafka/producer"
 	"video-realtime-ranking/ranking-engine/internal/dataaccess/redis"
+	"video-realtime-ranking/ranking-engine/internal/handler/consumers"
 	"video-realtime-ranking/ranking-engine/internal/routes"
 	"video-realtime-ranking/ranking-engine/internal/service"
 
@@ -35,16 +38,29 @@ func Initial(cfg config.Config) {
 	}
 	// defer mongod.Disconnect(context.Background())
 
-	redis := redis.NewRedis(cfg)
-	redisClient, err := redis.Connect()
+	redisInstance := redis.NewRedis(cfg)
+	redisClient, err := redisInstance.Connect()
 	if err != nil {
 		log.Fatal("Cannot connect to redis ", err)
 	}
 	defer redisClient.Close()
 
+	rankingRepository := redis.NewRankingDataAccessor(redisClient)
+
+	kafkaProducer, err := producer.NewProducer(cfg)
+	if err != nil {
+		log.Fatal("Cannot new producer kafka ", err)
+	}
+	rankingKafkaProducer := producer.NewRankingProducer(kafkaProducer)
+
+	kafkaConsumer, err := consumer.NewConsumer(cfg)
+	if err != nil {
+		log.Fatal("Cannot new consumer kafka ", err)
+	}
+
 	interactionDataAccessor := database.NewInteractionDataAccessor(db)
-	interactionService := service.NewInteractionService(interactionDataAccessor)
-	routes := routes.NewRouter(http.NewServeMux(), interactionService)
+	rankingService := service.NewrankingEngineService(interactionDataAccessor, rankingRepository, rankingKafkaProducer)
+	routes := routes.NewRouter(http.NewServeMux(), rankingService)
 
 	// waitGroup
 	waitGroup, ctx := errgroup.WithContext(ctx)
@@ -55,6 +71,17 @@ func Initial(cfg config.Config) {
 		opts = app.Port(cfg.Server.Host, cfg.Server.Port)
 	}
 	app.NewServer(routes.SetupRouter(), waitGroup, ctx, opts)
+
+	// start consumer threads
+	interactionCreateMessageHandler := consumers.NewInteractionCreateMessageHandler(rankingService)
+	newRankingServiceKafkaConsumer := consumers.NewRankingServiceKafkaConsumer(kafkaConsumer, interactionCreateMessageHandler)
+
+	go func(ctx context.Context) {
+		err := newRankingServiceKafkaConsumer.Start(ctx)
+		if err != nil {
+			return
+		}
+	}(context.Background())
 
 	err = waitGroup.Wait()
 	if err != nil {

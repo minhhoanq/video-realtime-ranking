@@ -51,5 +51,3 @@ services:
             - ALLOW_PLAINTEXT_LISTENER=yes
         depends_on:
             - zookeeper
-        volumes:
-            - ./data/kafka:/bitnami/kafka/data

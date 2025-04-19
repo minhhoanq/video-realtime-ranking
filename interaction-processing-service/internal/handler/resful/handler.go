@@ -4,16 +4,21 @@ import (
 	"encoding/json"
 	"net/http"
 	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
+	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/kafka/producer"
 	"video-realtime-ranking/interaction-processing-service/internal/service"
 )
 
 type Handler struct {
-	interactionService service.InteractionService
+	interactionService             service.InteractionService
+	interactionCreateKafkaProducer producer.InteractionCreateProducer
 }
 
-func NewHandler(interactionService service.InteractionService) *Handler {
+func NewHandler(interactionService service.InteractionService,
+	interactionCreateKafkaProducer producer.InteractionCreateProducer,
+) *Handler {
 	return &Handler{
-		interactionService: interactionService,
+		interactionService:             interactionService,
+		interactionCreateKafkaProducer: interactionCreateKafkaProducer,
 	}
 }
 
@@ -33,24 +38,14 @@ func (h *Handler) CreateInteraction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Tạo argument cho data layer
-	arg := database.SendInteractionRequest{
+	message := producer.InteractionCreate{
 		UserID:          req.UserID,
 		VideoID:         req.VideoID,
 		InteractionType: req.InteractionType,
 	}
 
-	interaction, err := h.interactionService.CreateInteraction(ctx, &arg)
-	if err != nil {
-		http.Error(w, "Failed to create interaction", http.StatusInternalServerError)
-		return
-	}
-
-	response := &database.SendInteractionResponse{
-		UserID:  interaction.UserID,
-		VideoID: interaction.UserID,
-		ID:      interaction.ID,
-	}
+	err := h.interactionCreateKafkaProducer.Produce(ctx, message)
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(err)
 }

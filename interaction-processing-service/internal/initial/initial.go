@@ -11,7 +11,10 @@ import (
 	"video-realtime-ranking/interaction-processing-service/config"
 	"video-realtime-ranking/interaction-processing-service/internal/app"
 	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
+	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/kafka/consumer"
+	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/kafka/producer"
 	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/redis"
+	"video-realtime-ranking/interaction-processing-service/internal/handler/consumers"
 	"video-realtime-ranking/interaction-processing-service/internal/handler/resful"
 	"video-realtime-ranking/interaction-processing-service/internal/routes"
 	"video-realtime-ranking/interaction-processing-service/internal/service"
@@ -43,9 +46,20 @@ func Initial(cfg config.Config) {
 	}
 	defer redisClient.Close()
 
+	kafkaProducer, err := producer.NewProducer(cfg)
+	if err != nil {
+		log.Fatal("cannot connect to kafka producer ", err)
+	}
+	interactionCreateKafkaProducer := producer.NewInteractionProducer(kafkaProducer)
+
+	kafkaConsumer, err := consumer.NewConsumer(cfg)
+	if err != nil {
+		log.Fatal("cannot connect to kafka consumer ", err)
+	}
+
 	interactionDataAccessor := database.NewInteractionDataAccessor(db)
 	interactionService := service.NewInteractionService(interactionDataAccessor)
-	interactionHandler := resful.NewHandler(interactionService)
+	interactionHandler := resful.NewHandler(interactionService, interactionCreateKafkaProducer)
 	routes := routes.NewRouter(http.NewServeMux(), interactionHandler)
 
 	// waitGroup
@@ -57,6 +71,17 @@ func Initial(cfg config.Config) {
 		opts = app.Port(cfg.Server.Host, cfg.Server.Port)
 	}
 	app.NewServer(routes.SetupRouter(), waitGroup, ctx, opts)
+
+	// start consumers
+	interactionProcessedMessageHandler := consumers.NewInteractionProcessedMessageHandler(interactionService)
+	newInteractionKafkaConsumer := consumers.NewInteractionServiceKafkaConsumer(kafkaConsumer, interactionProcessedMessageHandler)
+
+	go func(ctx context.Context) {
+		err := newInteractionKafkaConsumer.Start(ctx)
+		if err != nil {
+			return
+		}
+	}(context.Background())
 
 	err = waitGroup.Wait()
 	if err != nil {

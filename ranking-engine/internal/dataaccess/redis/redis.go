@@ -8,6 +8,10 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+const (
+	VideoLeaderBoardKey = "video:leaderboard"
+)
+
 type Redis struct {
 	cfg config.Config
 }
