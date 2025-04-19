@@ -12,6 +12,7 @@ import (
 	"video-realtime-ranking/interaction-processing-service/internal/app"
 	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
 	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/redis"
+	"video-realtime-ranking/interaction-processing-service/internal/handler/resful"
 	"video-realtime-ranking/interaction-processing-service/internal/routes"
 	"video-realtime-ranking/interaction-processing-service/internal/service"
 
@@ -44,7 +45,8 @@ func Initial(cfg config.Config) {
 
 	interactionDataAccessor := database.NewInteractionDataAccessor(db)
 	interactionService := service.NewInteractionService(interactionDataAccessor)
-	routes := routes.NewRouter(http.NewServeMux(), interactionService)
+	interactionHandler := resful.NewHandler(interactionService)
+	routes := routes.NewRouter(http.NewServeMux(), interactionHandler)
 
 	// waitGroup
 	waitGroup, ctx := errgroup.WithContext(ctx)
