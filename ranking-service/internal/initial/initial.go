@@ -12,7 +12,9 @@ import (
 	"video-realtime-ranking/ranking-service/internal/app"
 	"video-realtime-ranking/ranking-service/internal/dataaccess/database"
 	"video-realtime-ranking/ranking-service/internal/dataaccess/redis"
+	"video-realtime-ranking/ranking-service/internal/handler/resful"
 	"video-realtime-ranking/ranking-service/internal/routes"
+	"video-realtime-ranking/ranking-service/internal/service"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -34,14 +36,18 @@ func Initial(cfg config.Config) {
 	}
 	// defer pg.Close()
 
-	redis := redis.NewRedis(cfg)
-	redisClient, err := redis.Connect()
+	redisInstance := redis.NewRedis(cfg)
+	redisClient, err := redisInstance.Connect()
 	if err != nil {
 		log.Fatal("Cannot connect to redis ", err)
 	}
 	defer redisClient.Close()
 
-	routes := routes.NewRouter(http.NewServeMux())
+	rankingRedisDataAccessor := redis.NewRankingDataAccessor(redisClient)
+	rankingService := service.NewRankingService(rankingRedisDataAccessor)
+	rankingHandler := resful.NewHandler(rankingService)
+
+	routes := routes.NewRouter(http.NewServeMux(), rankingHandler)
 
 	// waitGroup
 	waitGroup, ctx := errgroup.WithContext(ctx)

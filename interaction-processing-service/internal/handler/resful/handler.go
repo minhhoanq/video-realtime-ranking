@@ -2,6 +2,7 @@ package resful
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
 	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/kafka/producer"
@@ -27,13 +28,13 @@ func (h *Handler) CreateInteraction(w http.ResponseWriter, r *http.Request) {
 	// Parse JSON body
 	var req database.SendInteractionRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		Error(w, err, http.StatusBadRequest)
 		return
 	}
 
 	// Validate (optional)
 	if req.UserID == "" || req.VideoID == "" || req.InteractionType == "" {
-		http.Error(w, "Missing required fields", http.StatusBadRequest)
+		Error(w, errors.New("Missing required fields"), http.StatusBadRequest)
 		return
 	}
 
@@ -45,7 +46,9 @@ func (h *Handler) CreateInteraction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := h.interactionCreateKafkaProducer.Produce(ctx, message)
+	if err != nil {
+		Error(w, err, http.StatusBadRequest)
+	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(err)
+	Success(w, err, http.StatusOK, nil)
 }

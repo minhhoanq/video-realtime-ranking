@@ -2,15 +2,20 @@ package routes
 
 import (
 	"net/http"
+	"video-realtime-ranking/ranking-service/internal/handler/resful"
 )
 
 type Routes struct {
-	serverMux *http.ServeMux
+	serverMux      *http.ServeMux
+	rankingHandler *resful.Handler
 }
 
-func NewRouter(serverMux *http.ServeMux) *Routes {
+func NewRouter(serverMux *http.ServeMux,
+	rankingHandler *resful.Handler,
+) *Routes {
 	return &Routes{
-		serverMux: serverMux,
+		serverMux:      serverMux,
+		rankingHandler: rankingHandler,
 	}
 }
 
@@ -31,5 +36,6 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 
 func (r *Routes) SetupRouter() http.Handler {
 	r.serverMux.HandleFunc("/health-check", methodHandlerFunc(http.MethodGet, healthCheck))
+	r.serverMux.HandleFunc("/top-k", methodHandlerFunc(http.MethodGet, r.rankingHandler.GetTopK))
 	return r.serverMux
 }
