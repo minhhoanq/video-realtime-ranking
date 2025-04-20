@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"video-realtime-ranking/common/logger"
 	"video-realtime-ranking/ranking-service/config"
 	"video-realtime-ranking/ranking-service/internal/app"
 	"video-realtime-ranking/ranking-service/internal/dataaccess/database"
@@ -16,6 +17,7 @@ import (
 	"video-realtime-ranking/ranking-service/internal/routes"
 	"video-realtime-ranking/ranking-service/internal/service"
 
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -30,6 +32,10 @@ func Initial(cfg config.Config) {
 	ctx, stop := signal.NotifyContext(context.Background(), interuptSignals...)
 	defer stop()
 
+	logger.Setup(cfg.Server.Env, cfg.LogLevel)
+	l := logger.NewWrapLogger(zap.DebugLevel, false)
+
+	l.Info("start logger")
 	_, err := database.New(cfg)
 	if err != nil {
 		log.Fatal("Cannot connect to database ", err)
