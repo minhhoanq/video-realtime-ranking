@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	VideoLeaderBoardKey = "video:leaderboard"
+	GlobalScore    = "video:global_score"
+	UserVideoScore = "video"
 )
 
 type Redis struct {

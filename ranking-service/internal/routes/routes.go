@@ -36,6 +36,7 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 
 func (r *Routes) SetupRouter() http.Handler {
 	r.serverMux.HandleFunc("/health-check", methodHandlerFunc(http.MethodGet, healthCheck))
+	r.serverMux.HandleFunc("/top-k/user/{user_id}", methodHandlerFunc(http.MethodGet, r.rankingHandler.GetTopKUser))
 	r.serverMux.HandleFunc("/top-k", methodHandlerFunc(http.MethodGet, r.rankingHandler.GetTopK))
 	return r.serverMux
 }

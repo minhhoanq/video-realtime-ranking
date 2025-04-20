@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"video-realtime-ranking/ranking-engine/internal/dataaccess/database"
 	"video-realtime-ranking/ranking-engine/internal/dataaccess/kafka/producer"
 	"video-realtime-ranking/ranking-engine/internal/dataaccess/redis"
@@ -44,9 +45,22 @@ func (i *rankingEngineService) RankingEngine(ctx context.Context, arg *Interacti
 		"comment": 2.0,
 		"share":   5.0,
 	}
-	_, err := i.rankingRedisDataAccessor.IncrementScore(ctx, redis.VideoLeaderBoardKey, arg.VideoID.String(), scores[arg.InteractionType])
-	if err != nil {
-		return err
+
+	score, ok := scores[arg.InteractionType]
+	if !ok {
+		return fmt.Errorf("invalid interaction type: %s", arg.InteractionType)
+	}
+
+	// increment score for global score and per user score
+	scoreKeys := []string{
+		redis.GlobalScore,
+		fmt.Sprintf("%s:%s", redis.UserVideoScore, arg.UserID.String()),
+	}
+
+	for _, key := range scoreKeys {
+		if _, err := i.rankingRedisDataAccessor.IncrementScore(ctx, key, arg.VideoID.String(), score); err != nil {
+			return err
+		}
 	}
 
 	message := producer.InteractionProcessed{
