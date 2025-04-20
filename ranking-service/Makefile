@@ -1,5 +1,5 @@
 DATABASE_URL := postgres://root:secret@localhost:5432/ranking_psql?sslmode=disable
-PATH_MOCK_REPOSITORY := github.com/minhhoanq/video-realtime-ranking/ranking-service/internal/dataaccess/database
+PATH_MOCK_REPOSITORY := github.com/minhhoanq/video-realtime-ranking/ranking-service/internal/dataaccess
 
 server:
 	go run cmd/app/main.go
