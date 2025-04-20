@@ -1,4 +1,4 @@
-module video-realtime-ranking/common
+module github.com/minhhoanq/video-realtime-ranking/common
 
 go 1.23.6
 

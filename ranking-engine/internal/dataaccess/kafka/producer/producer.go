@@ -3,9 +3,9 @@ package producer
 import (
 	"context"
 	"fmt"
-	"video-realtime-ranking/ranking-engine/config"
 
 	"github.com/IBM/sarama"
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/config"
 )
 
 type Producer interface {

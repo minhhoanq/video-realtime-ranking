@@ -2,7 +2,8 @@ package routes
 
 import (
 	"net/http"
-	"video-realtime-ranking/interaction-processing-service/internal/handler/resful"
+
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/internal/handler/resful"
 )
 
 type Routes struct {

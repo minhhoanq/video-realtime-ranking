@@ -38,12 +38,7 @@ func (r *rankingRedisDataAccessor) GetScore(ctx context.Context, key string, mem
 			return 0.0, redis.Nil
 		}
 		fmt.Printf("Repo Error: ZSCORE key=%s, member=%s - %v\n", key, member, err)
-		return 0.0, fmt.Errorf("redis: failed to get score for %s in %s: %w", member, key, err)
-	}
-
-	if err != nil {
-		fmt.Printf("Repo Error: ParseFloat key=%s, member=%s, scoreStr=%s - %v\n", key, member, score, err)
-		return 0.0, fmt.Errorf("redis: failed to parse score '%s' for %s in %s: %w", score, member, key, err)
+		return 0.0, err
 	}
 
 	return score, nil
@@ -54,7 +49,7 @@ func (r *rankingRedisDataAccessor) GetTopRanked(ctx context.Context, key string,
 
 	videos, err := r.rdb.ZRevRangeWithScores(ctx, key, start, stop).Result()
 	if err != nil {
-		return nil, fmt.Errorf("redis: failed to get top ranked from %s: %w", key, err)
+		return nil, err
 	}
 	return videos, nil
 }

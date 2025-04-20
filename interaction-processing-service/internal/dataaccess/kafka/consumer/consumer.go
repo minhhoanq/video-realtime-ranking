@@ -7,7 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"video-realtime-ranking/interaction-processing-service/config"
+
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/config"
 
 	"github.com/IBM/sarama"
 )

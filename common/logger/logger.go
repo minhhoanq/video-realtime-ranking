@@ -2,8 +2,8 @@ package logger
 
 import (
 	"log"
-	"video-realtime-ranking/common/constants"
 
+	"github.com/minhhoanq/video-realtime-ranking/common/constants"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )

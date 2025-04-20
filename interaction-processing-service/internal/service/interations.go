@@ -2,7 +2,8 @@ package service
 
 import (
 	"context"
-	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
+
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
 )
 
 type InteractionService interface {

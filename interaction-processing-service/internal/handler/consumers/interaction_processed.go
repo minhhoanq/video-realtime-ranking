@@ -3,8 +3,9 @@ package consumers
 import (
 	"context"
 	"fmt"
-	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
-	"video-realtime-ranking/interaction-processing-service/internal/service"
+
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/internal/service"
 
 	"github.com/google/uuid"
 )

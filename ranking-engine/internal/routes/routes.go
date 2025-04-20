@@ -2,7 +2,8 @@ package routes
 
 import (
 	"net/http"
-	"video-realtime-ranking/ranking-engine/internal/service"
+
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/internal/service"
 )
 
 type Routes struct {

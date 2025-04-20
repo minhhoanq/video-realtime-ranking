@@ -6,12 +6,12 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"video-realtime-ranking/ranking-service/config"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	_ "github.com/lib/pq" // PostgreSQL driver
+	"github.com/minhhoanq/video-realtime-ranking/ranking-service/config"
 )
 
 var (

@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
-	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/kafka/producer"
-	"video-realtime-ranking/interaction-processing-service/internal/service"
+
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/internal/dataaccess/database"
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/internal/dataaccess/kafka/producer"
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/internal/service"
 )
 
 type Handler struct {

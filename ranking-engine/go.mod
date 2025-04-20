@@ -1,4 +1,4 @@
-module video-realtime-ranking/ranking-engine
+module github.com/minhhoanq/video-realtime-ranking/ranking-engine
 
 go 1.23.6
 

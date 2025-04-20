@@ -4,7 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"video-realtime-ranking/ranking-service/config"
+
+	"github.com/minhhoanq/video-realtime-ranking/ranking-service/config"
 )
 
 type Database struct {

@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 	"fmt"
-	"video-realtime-ranking/ranking-engine/internal/dataaccess/database"
-	"video-realtime-ranking/ranking-engine/internal/dataaccess/kafka/producer"
-	"video-realtime-ranking/ranking-engine/internal/dataaccess/redis"
 
 	"github.com/google/uuid"
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/internal/dataaccess/database"
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/internal/dataaccess/kafka/producer"
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/internal/dataaccess/redis"
 )
 
 type RankingEngineService interface {

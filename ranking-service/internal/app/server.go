@@ -5,7 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"video-realtime-ranking/ranking-service/pkg/constants"
+
+	"github.com/minhhoanq/video-realtime-ranking/ranking-service/pkg/constants"
 
 	"golang.org/x/sync/errgroup"
 )

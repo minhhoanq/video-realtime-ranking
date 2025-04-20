@@ -1,4 +1,4 @@
-module video-realtime-ranking/interaction-processing-service
+module github.com/minhhoanq/video-realtime-ranking/interaction-processing-service
 
 go 1.23.6
 

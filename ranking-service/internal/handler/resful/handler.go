@@ -5,7 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"video-realtime-ranking/ranking-service/internal/service"
+
+	"github.com/minhhoanq/video-realtime-ranking/ranking-service/internal/service"
 )
 
 type Handler struct {

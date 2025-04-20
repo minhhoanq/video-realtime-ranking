@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"video-realtime-ranking/interaction-processing-service/config"
-	"video-realtime-ranking/interaction-processing-service/pkg/constants"
+
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/config"
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/pkg/constants"
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"

@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"video-realtime-ranking/interaction-processing-service/config"
+
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/config"
 
 	"github.com/redis/go-redis/v9"
 )

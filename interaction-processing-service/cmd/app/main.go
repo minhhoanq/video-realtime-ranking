@@ -1,8 +1,8 @@
 package main
 
 import (
-	"video-realtime-ranking/interaction-processing-service/config"
-	"video-realtime-ranking/interaction-processing-service/internal/initial"
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/config"
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/internal/initial"
 )
 
 func main() {

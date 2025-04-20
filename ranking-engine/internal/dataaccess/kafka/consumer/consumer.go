@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"video-realtime-ranking/ranking-engine/config"
 
 	"github.com/IBM/sarama"
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/config"
 )
 
 type MessageHandlerFunc func(ctx context.Context, topic string, message []byte) error

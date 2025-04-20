@@ -1,8 +1,8 @@
 package main
 
 import (
-	"video-realtime-ranking/ranking-engine/config"
-	"video-realtime-ranking/ranking-engine/internal/initial"
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/config"
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/internal/initial"
 )
 
 func main() {

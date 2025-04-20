@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"video-realtime-ranking/interaction-processing-service/pkg/constants"
+
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/pkg/constants"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 )

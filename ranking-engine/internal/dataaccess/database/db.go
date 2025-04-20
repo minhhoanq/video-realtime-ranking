@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"video-realtime-ranking/ranking-engine/config"
-	"video-realtime-ranking/ranking-engine/pkg/constants"
 
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/pkg/constants"
+
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/config"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )

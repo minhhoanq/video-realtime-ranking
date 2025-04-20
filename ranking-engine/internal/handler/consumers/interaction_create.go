@@ -2,9 +2,9 @@ package consumers
 
 import (
 	"context"
-	"video-realtime-ranking/ranking-engine/internal/service"
 
 	"github.com/google/uuid"
+	"github.com/minhhoanq/video-realtime-ranking/ranking-engine/internal/service"
 )
 
 const (

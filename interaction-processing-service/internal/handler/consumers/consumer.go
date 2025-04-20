@@ -3,7 +3,8 @@ package consumers
 import (
 	"context"
 	"encoding/json"
-	"video-realtime-ranking/interaction-processing-service/internal/dataaccess/kafka/consumer"
+
+	"github.com/minhhoanq/video-realtime-ranking/interaction-processing-service/internal/dataaccess/kafka/consumer"
 )
 
 type InteractionServiceKafkaConsumer interface {

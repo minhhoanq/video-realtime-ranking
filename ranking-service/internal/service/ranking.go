@@ -3,8 +3,9 @@ package service
 import (
 	"context"
 	"fmt"
-	"video-realtime-ranking/ranking-service/internal/dataaccess/database"
-	"video-realtime-ranking/ranking-service/internal/dataaccess/redis"
+
+	"github.com/minhhoanq/video-realtime-ranking/ranking-service/internal/dataaccess/database"
+	"github.com/minhhoanq/video-realtime-ranking/ranking-service/internal/dataaccess/redis"
 )
 
 type RankingService interface {
