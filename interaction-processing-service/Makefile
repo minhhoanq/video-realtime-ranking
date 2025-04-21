@@ -1,5 +1,11 @@
 DATABASE_URL := postgres://root:secret@localhost:5432/ranking_psql?sslmode=disable
 
+build:
+	go build -v ./...
+
+test:
+	go test -v ./...
+
 server:
 	go run cmd/app/main.go
 
@@ -22,4 +28,4 @@ migratedown:
 	migrate -path ./internal/dataaccess/database/migrations/postgres -database ${DATABASE_URL} down
 
 
-.PHONY: server up down postgres createdb dropdb migrate-create migrateup migratedown
+.PHONY: build test server up down postgres createdb dropdb migrate-create migrateup migratedown
