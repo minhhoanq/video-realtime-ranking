@@ -16,7 +16,7 @@ jobs:
         strategy:
             matrix:
                 include:
-                    - name: ranking-serive
+                    - name: ranking-service
                       type: go
                     - name: ranking-engine
                       type: go
