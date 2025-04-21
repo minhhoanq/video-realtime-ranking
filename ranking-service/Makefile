@@ -1,6 +1,12 @@
 DATABASE_URL := postgres://root:secret@localhost:5432/ranking_psql?sslmode=disable
 PATH_MOCK_REPOSITORY := github.com/minhhoanq/video-realtime-ranking/ranking-service/internal/dataaccess
 
+build:
+	go build -v ./...
+
+test:
+	go test -v ./...
+
 server:
 	go run cmd/app/main.go
 
@@ -25,5 +31,4 @@ migratedown:
 mockrd:
 	mockgen -package mockrd -destination internal/dataaccess/redis/mock/store.go ${PATH_MOCK_REPOSITORY}/redis RankingDataAccessor
 
-
-.PHONY: server up down postgres createdb dropdb migrate-create migrateup migratedown mockrd
+.PHONY: build test server up down postgres createdb dropdb migrate-create migrateup migratedown mockrd
