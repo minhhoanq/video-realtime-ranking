@@ -44,9 +44,8 @@ func NewRankingDataAccessor(rdb *redis.Client) RankingDataAccessor {
 func (r *rankingRedisDataAccessor) IncrementScore(ctx context.Context, key string, member string, increment float64) (float64, error) {
 	newScore, err := r.rdb.ZIncrBy(ctx, key, increment, member).Result()
 	if err != nil {
-		// Log lỗi chi tiết ở đây trước khi trả về
 		fmt.Printf("Repo Error: ZINCRBY key=%s, member=%s, inc=%f - %v\n", key, member, increment, err)
-		return 0, fmt.Errorf("repository: failed to increment score for %s in %s: %w", member, key, err)
+		return 0, err
 	}
 	return newScore, nil
 }
@@ -56,19 +55,15 @@ func (r *rankingRedisDataAccessor) GetScore(ctx context.Context, key string, mem
 	score, err := r.rdb.ZScore(ctx, key, member).Result()
 	if err != nil {
 		if err == redis.Nil {
-			// Member không tồn tại là trường hợp hợp lệ, trả về 0 và lỗi redis.Nil
-			return 0.0, redis.Nil // Trả về lỗi redis.Nil để code nghiệp vụ kiểm tra
+			return 0.0, redis.Nil
 		}
-		// Log lỗi chi tiết ở đây
 		fmt.Printf("Repo Error: ZSCORE key=%s, member=%s - %v\n", key, member, err)
-		return 0.0, fmt.Errorf("repository: failed to get score for %s in %s: %w", member, key, err)
+		return 0.0, err
 	}
 
 	// Parse string score sang float
 	if err != nil {
-		// Log lỗi parse string (trường hợp dữ liệu Redis bị lỗi)
-		fmt.Printf("Repo Error: ParseFloat key=%s, member=%s, scoreStr=%s - %v\n", key, member, score, err)
-		return 0.0, fmt.Errorf("repository: failed to parse score '%s' for %s in %s: %w", score, member, key, err)
+		return 0.0, err
 	}
 
 	return score, nil
@@ -83,7 +78,7 @@ func (r *rankingRedisDataAccessor) GetTopRanked(ctx context.Context, key string,
 	videos, err := r.rdb.ZRevRangeWithScores(ctx, key, start, stop).Result()
 	if err != nil {
 		fmt.Printf("Repo Error: ZREVRANGE key=%s, offset=%d, limit=%d - %v\n", key, offset, limit, err)
-		return nil, fmt.Errorf("repository: failed to get top ranked from %s: %w", key, err)
+		return nil, err
 	}
 	return videos, nil
 }
