@@ -1,5 +1,5 @@
 # video-realtime-ranking
 
-## Design System
+## System Design 
 
 ![](video-realtime-ranking.png)
