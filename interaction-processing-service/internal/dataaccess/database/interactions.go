@@ -37,7 +37,7 @@ func (i *interactionDataAccessor) CreateInteraction(ctx context.Context, arg *Se
 		},
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to insert notify to database, err: ", err)
+		return nil, fmt.Errorf("failed to insert notify to database, err: %s", err)
 	}
 
 	// convert insertedID type

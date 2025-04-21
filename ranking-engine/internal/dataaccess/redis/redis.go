@@ -33,7 +33,7 @@ func (r *Redis) Connect() (*redis.Client, error) {
 	// check connection
 	_, err := client.Ping(context.Background()).Result()
 	if err != nil {
-		return nil, fmt.Errorf("cannot connection to redis, err: ", err.Error())
+		return nil, fmt.Errorf("cannot connection to redis, err: %v", err)
 	}
 	fmt.Println("connect to redis successfully")
 

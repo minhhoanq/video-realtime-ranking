@@ -1,0 +1,45 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                include:
+                    - name: ranking-service
+                      type: go
+                    - name: ranking-engine
+                      type: go
+                    - name: interaction-processing-service
+                      type: go
+
+        defaults:
+            run:
+                working-directory: ${{ matrix.name }}
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Set up Go
+              if: matrix.type == 'go'
+              uses: actions/setup-go@v4
+              with:
+                  go-version: "1.23.6"
+
+            - name: Build
+              if: matrix.type == 'go'
+              run: go build -v ./...
+
+            - name: Test
+              if: matrix.type == 'go'
+              run: go test -v ./...
